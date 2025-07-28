@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MemePi P2P Chat - Unleash Your Brilliance</title>
+    
+    <!-- Google Fonts: Poppins (for main text), Dancing Script (for accents) -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- PWA Manifest Link -->
+    <link rel="manifest" href="manifest.json"> 
+
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+    <header>
+        <!-- Your Logo Image -->
+        <img id="logo-img" src="images/memepi-logo.png" alt="MemePi Token Logo">
+        <h1>Unleashing <span class="highlight">Creative</span> brilliance</h1>
+        <p class="subtitle-location">MemePi P2P Chat</p>
+    </header>
+
+    <!-- Abstract Decorative Elements -->
+    <div class="abstract-element star-1">✨</div>
+    <div class="abstract-element star-2">🌟</div>
+    <div class="abstract-element squiggle">𝓒𝓱𝓪𝓽</div>
+
+    <div id="app-container">
+        <!-- Authentication Section -->
+        <div id="auth-section">
+            <input type="text" id="auth-username" placeholder="Username">
+            <input type="password" id="auth-password" placeholder="Password">
+            <div class="auth-buttons">
+                <button id="signup-button">Sign Up</button>
+                <button id="login-button">Log In</button>
+                <button id="logout-button">Log Out</button>
+            </div>
+            <span id="auth-status">Not Logged In</span>
+        </div>
+
+        <!-- Wallet Connection Section -->
+        <div id="wallet-section">
+            <div id="wallet-info">
+                Wallet: <span id="wallet-address">Not Connected</span><br>
+                MEMEPI Balance: <span id="memepi-balance">0.00</span>
+            </div>
+            <button id="connect-wallet-button">Connect Wallet</button>
+            <button id="buy-memepi-button">Buy MEMEPI</button>
+        </div>
+
+        <!-- AI Bot Toggle Section -->
+        <div id="ai-bot-toggle-section">
+            <label for="ai-bot-toggle">
+                <input type="checkbox" id="ai-bot-toggle">
+                Activate MemePi Oracle Bot
+            </label>
+        </div>
+
+        <div id="main-chat-layout">
+            <!-- Sidebar for Rooms and Users -->
+            <div id="sidebar">
+                <div id="room-selection">
+                    <h3>Rooms</h3>
+                    <ul id="room-list">
+                        <!-- Rooms will be dynamically loaded here -->
+                    </ul>
+                    <button id="create-room-button">Create New Room</button>
+                </div>
+                <div id="online-users">
+                    <h3>Online Users</h3>
+                    <ul id="user-list">
+                        <!-- Online users will appear here -->
+                    </ul>
+                </div>
+                <!-- Moderator controls will be appended here by JS -->
+            </div>
+
+            <!-- Main Chat Area -->
+            <div id="chat-area">
+                <div id="messages">
+                    <!-- Chat messages will appear here -->
+                </div>
+                <div id="typing-indicator"></div>
+                <div id="input-area">
+                    <input type="text" id="message-input" placeholder="Type your message..." autofocus disabled>
+                    <button id="send-button" disabled>Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Tip Modal -->
+    <div id="tipModal" class="modal">
+        <div class="modal-content">
+            <h3>Send MEMEPI Tip</h3>
+            <p>Tipping <span id="tipRecipientAlias"></span></p>
+            <input type="number" id="tipAmountInput" placeholder="Amount (MEMEPI)" step="0.01" min="0.01">
+            <div class="modal-message" id="tipMessage"></div>
+            <button class="confirm-button" id="confirmTipButton">Confirm Tip</button>
+            <button class="cancel-button" id="cancelTipButton">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Create Room Modal -->
+    <div id="createRoomModal" class="modal">
+        <div class="modal-content">
+            <h3>Create New Chat Room</h3>
+            <input type="text" id="newRoomNameInput" placeholder="Enter room name (e.g., my-new-room)">
+            <div class="modal-message" id="createRoomMessage"></div>
+            <button class="confirm-button" id="confirmCreateRoomButton">Create Room</button>
+            <button class="cancel-button" id="cancelCreateRoomButton">Cancel</button>
+        </div>
+    </div>
+
+    <!-- CAPTCHA Modal -->
+    <div id="captcha-modal" class="modal">
+        <div class="modal-content">
+            <h3>Security Check</h3>
+            <p>Please solve the CAPTCHA to proceed:</p>
+            <div id="captcha-challenge" style="font-family: 'Dancing Script', cursive; font-size: 2em; margin-bottom: 15px;"></div>
+            <input type="text" id="captcha-input" placeholder="Your answer">
+            <div class="modal-message" id="captcha-message"></div>
+            <button class="confirm-button" id="captcha-confirm-button">Verify</button>
+            <button class="cancel-button" id="captcha-cancel-button">Cancel</button>
+        </div>
+    </div>
+
+
+    <!-- Include Ethers.js (before your main script) -->
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js" type="application/javascript"></script>
+
+    <!-- Include Gun.js and SEA library -->
+    <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gun/lib/not.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gun/lib/webrtc.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gun/sea.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gun-indexeddb/gun-indexeddb.js"></script>
+
+    <!-- Include Million.js -->
+    <script src="https://unpkg.com/million@2.6.4/dist/million.js"></script> 
+    
+    <!-- Include GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script src="script.js"></script>
+
+</body>
+</html>
